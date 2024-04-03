@@ -1,18 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3000/login", {
+        username,
+        password,
+      });
+      if (response.data.success) {
+        // Redirect to dashboard or perform any action upon successful login
+        setMessage(response.data.message);
+      } else {
+        setMessage(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div className="mx-auto mt-10">
       <h1 className="text-4xl font-bold text-center ">
         Queue Management System
       </h1>
-      <form action="" className="max-w-sm mx-auto mt-5">
+      <form onSubmit={handleLogin} className="max-w-sm mx-auto mt-5">
         <div className="mb-5">
           <input
             className="bg-gray-50 border rounded-lg border-gray-300 text-gray-900 text-sm rounded-lg: focus:ring-blue-500 block w-full p-2.5"
             type="text"
-            name=""
-            id=""
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="Username"
           />
         </div>
@@ -20,7 +43,8 @@ const Login = () => {
           <input
             className="bg-gray-50 border rounded-lg border-gray-300 text-gray-900 text-sm rounded-lg: focus:ring-blue-500 block w-full p-2.5"
             type="password"
-            name=""
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
           />
         </div>
@@ -30,6 +54,7 @@ const Login = () => {
         >
           Submit
         </button>
+        {message && <p>{message}</p>}
       </form>
     </div>
   );
